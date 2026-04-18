@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="UTF-8">
+<title>GA Y-beauty </title>
+
+<style>
+
+body{
+font-family: Arial, sans-serif;
+background: linear-gradient(to right, #f8fafc, #e2e8f0);
+padding:20px;
+margin:0;
+}
+
+h2{
+text-align:center;
+margin-bottom:30px;
+}
+
+/* Grid Layout */
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+gap:25px;
+}
+
+/* Product Card */
+.card{
+background:white;
+padding:20px;
+border-radius:12px;
+cursor:pointer;
+box-shadow:0 5px 15px rgba(0,0,0,0.08);
+transition: all 0.3s ease;
+position:relative;
+overflow:hidden;
+}
+
+/* Hover Effect */
+.card:hover{
+transform: translateY(-8px);
+box-shadow:0 12px 25px rgba(0,0,0,0.15);
+}
+
+/* Subtle Click Effect */
+.card:active{
+transform: scale(0.98);
+}
+
+
+/* Price Styling */
+.card p{
+font-size:18px;
+font-weight:bold;
+color:#2563eb;
+}
+
+/* Button Styling */
+button{
+width:100%;
+padding:12px;
+background:#2563eb;
+color:white;
+border:none;
+margin-top:15px;
+cursor:pointer;
+border-radius:8px;
+font-weight:bold;
+transition: all 0.3s ease;
+}
+
+/* Button Hover */
+button:hover{
+background:#1e40af;
+transform: translateY(-2px);
+}
+
+/* Button Click */
+button:active{
+transform: scale(0.95);
+}
+
+/* Smooth fade-in animation when cards load */
+.card{
+animation: fadeIn 0.5s ease forwards;
+opacity:0;
+}
+
+@keyframes fadeIn{
+to{
+opacity:1;
+}
+}
+
+</style>
+
+
+
+
+
+
+
+<!-- =====================================================
+LEVEL 1: BASIC GA SETUP
+
+This line loads the Google Analytics tracking library (gtag.js).
+
+Explanation for beginners:
+- This script connects your website to Google Analytics.
+- It downloads Google's tracking code from their server.
+- Without this, Google Analytics cannot record any data.
+- The "async" keyword means the script loads in the background
+  without slowing down the page loading.
+- Replace G-XXXXXXXX with your actual GA Measurement ID.
+
+===================================================== -->
+
+<script async src="https://www.googletagmanager.com/gtag/js?id= G-XXXXXXXX "></script>
+
+<script>
+
+window.dataLayer = window.dataLayer || [];
+
+function gtag(){dataLayer.push(arguments);}
+
+gtag('js', new Date());
+
+/*
+This initializes Google Analytics tracking for your website.
+
+Explanation for beginners:
+- 'config' tells Google Analytics which property (account) to send data to.
+- It activates tracking for the page.
+- When this runs, GA automatically records a page view event.
+- Replace G-XXXXXXXX with your real Measurement ID.
+*/
+ gtag('config', G-XXXXXXXX ', { 'debug_mode': true });
+
+</script>
+
+</head>
+
+<body>
+
+<h2>EduShop GA Teaching Demo</h2>
+
+<div class="grid" id="productGrid"></div>
+
+<script>
+
+
+
+
+
+/* Dummy Product Data */
+
+const products=[
+
+        { id: 'p1', name: 'lip gloss', price: 299, category: 'lip' },
+        { id: 'p2', name: 'eyeliner', price: 350, category: 'eyes' },
+        { id: 'p3', name: 'perfume', price: 850, category: 'fregrance' },
+        { id: 'p4', name: 'blush', price: 450, category: 'chicks' },
+        { id: 'p5', name: 'nail paint', price: 65, category: 'nails' }
+
+];
+
+/* =====================================================
+LEVEL 2: BASIC EVENT TRACKING
+
+    This function is called when a user clicks on a product.
+    Explanation for beginners:
+    - "product" is an object passed into the function.
+      It contains details like product name, price, category, etc.
+    - When a product is clicked, this function sends data
+      to Google Analytics.
+
+    ===================================================== */
+
+function trackProductView(product){
+	 /* =====================================================
+	    gtag('event', ...) sends a custom event to Google Analytics.
+
+	    - 'view_item' is the event name.
+	          It tells GA that a product was viewed.
+
+	    - Events help track user behaviour.
+	          Here we track which product the user clicked.
+
+	===================================================== */
+
+gtag('event','view_item',{
+	/*===================================================== 
+
+        This is an event parameter.
+
+        - product_name is a label we send along with the event.
+        - product.name gets the name from the product object.
+        - Example: "Quantum Headphones"
+
+        So GA receives:
+        Event = view_item
+        Parameter = product_name : "Quantum Headphones"
+       ===================================================== */
+		product_name:product.name
+	});
+
+/*===================================================== 
+
+Explanation for beginners:
+
+- print messages in the browser's developer console.
+- It is mainly used for testing and debugging by developers.
+- It only helps the developer confirm that the function is working correctly.
+
+Example output in browser console:
+Viewed: Quantum Headphones
+===================================================== */
+console.log("Viewed:",product.name);
+
+}
+
+
+/*===================================================== 
+   LEVEL 2: BASIC EVENT TRACKING
+    This function runs when the user clicks the "Add to Cart" button.
+
+    - "event" represents the click event.
+    - "product" contains details of the product being added.
+    ===================================================== */
+function addToCart(event,product){
+
+event.stopPropagation();
+
+/*
+stopPropagation() stops the click event from moving to parent elements.
+
+Example:
+- The product card has a click event (view product).
+- The "Add to Cart" button is inside the card.
+
+Without stopPropagation():
+Clicking the "Add to Cart" button also triggers the parent card click,
+so the product view event (trackProductView / view_item) will run
+along with the add_to_cart event.
+
+With stopPropagation():
+Only the add_to_cart event runs; the product view event is prevented.
+*/
+
+
+gtag('event','add_to_cart',{
+product_name:product.name
+});
+
+
+alert(product.name+" added to cart");
+
+}
+
+
+/* =====================================================
+LEVEL 3: INDUSTRY LEVEL GA4 ECOMMERCE SCHEMA
+
+Explanation for beginners:
+
+- This version sends detailed ecommerce data to Google Analytics.
+- Instead of sending only the product name, we send structured
+  information (called parameters).
+- GA4 understands this standard format and can calculate
+  revenue, product performance, and conversion reports.
+
+Students learn:
+- items array (list of products involved in the event)
+- parameters (extra information sent with event)
+- revenue tracking (price + currency)
+===================================================== */
+
+function addToCart(event,product){
+
+    // Prevents parent product card click (view_item event)
+    event.stopPropagation();
+
+    // Sends ecommerce event to Google Analytics
+    gtag('event','add_to_cart',{
+
+        // Currency used for transaction value
+        currency:'INR',
+
+        // Monetary value associated with the event
+        // Helps GA calculate total revenue metrics
+        value:product.price,
+
+        // items = array containing product details
+        // GA4 expects ecommerce data in this format
+        items:[{
+
+            // Unique product identifier
+            item_id:product.id,
+
+            // Product name
+            item_name:product.name,
+
+            // Product category
+            item_category:product.category,
+
+            // Individual item price
+            price:product.price,
+
+            // Quantity added to cart
+            quantity:1
+        }]
+
+    });
+
+}
+
+
+
+
+/* Render Products */
+
+function renderProducts(){
+
+const grid=document.getElementById("productGrid");
+
+products.forEach(product=>{
+
+const card=document.createElement("div");
+
+card.className="card";
+
+card.onclick=()=>trackProductView(product);
+
+card.innerHTML=`
+
+<h3>${product.name}</h3>
+
+<p>₹${product.price}</p>
+
+<button onclick="addToCart(event, ${JSON.stringify(product).replace(/"/g,'&quot;')})">
+
+Add to Cart
+
+</button>
+
+`;
+
+grid.appendChild(card);
+
+});
+
+}
+
+renderProducts();
+
+</script>
+
+</body>
+</html>
